@@ -1,0 +1,44 @@
+{
+  "id": "0001",
+  "title": "Project scaffolding + shared UI patterns",
+  "epic": "Epic 0 Foundations",
+  "task": {
+    "description": "Create Next.js 15 App Router skeleton in src/ with strict TS, Tailwind v4, and shared UI patterns: LoadingState, ErrorState, EmptyState, FormField. Add basic layout + placeholder protected page.",
+    "acceptance_criteria": [
+      "App builds and runs with TypeScript strict and Tailwind styles applied.",
+      "Global layout renders nav placeholder (Home/Train/Generate/History) and a logged-in/out placeholder.",
+      "Shared components render correct states: loading skeleton, error banner + retry button, empty icon+heading+CTA link.",
+      "FormField shows label, child input, and inline error text.",
+      "Visiting a placeholder protected route shows a stub that will later be guarded (no auth yet)."
+    ]
+  },
+  "covers": [
+    "Reliability-first UI conventions",
+    "Consistent loading/error/empty states",
+    "Form validation message pattern"
+  ],
+  "files": [
+    "src/app/layout.tsx",
+    "src/app/page.tsx",
+    "src/app/app/page.tsx",
+    "src/components/ErrorState.tsx",
+    "src/components/EmptyState.tsx",
+    "src/components/FormField.tsx",
+    "src/components/LoadingState.tsx",
+    "src/lib/validation.ts",
+    "src/components/Nav.tsx"
+  ],
+  "definition_of_done": [
+    "Lint/typecheck pass",
+    "All shared state components used at least once in a page",
+    "Nav present in layout",
+    "No hardcoded secrets committed"
+  ],
+  "db_schema": "",
+  "api_contract": "",
+  "dependencies": [
+    "zod"
+  ],
+  "ui_requirements": "Layout: max-w-5xl mx-auto p-6. Use Card for page sections, Button variants, Input/Textarea in FormField. States: LoadingState skeleton, ErrorState banner w/ retry, EmptyState w/ CTA. Colors use CSS vars.",
+  "test_code": "import { describe, it, expect } from \"vitest\";\nimport fs from \"node:fs\";\nimport path from \"node:path\";\n\nconst repoRoot = process.cwd();\nconst p = (...parts: string[]) => path.join(repoRoot, ...parts);\n\ndescribe(\"packet-0001: scaffolding + shared UI patterns (sanity)\", () => {\n  it(\"required files exist\", () => {\n    const files = [\n      \"src/app/layout.tsx\",\n      \"src/app/page.tsx\",\n      \"src/app/app/page.tsx\",\n      \"src/components/ErrorState.tsx\",\n      \"src/components/EmptyState.tsx\",\n      \"src/components/FormField.tsx\",\n      \"src/components/LoadingState.tsx\",\n      \"src/lib/validation.ts\",\n      \"src/components/Nav.tsx\",\n    ];\n\n    for (const f of files) {\n      expect(fs.existsSync(p(f))).toBe(true);\n    }\n  });\n\n  it(\"layout includes nav placeholder and logged-in/out placeholder\", () => {\n    const layoutPath = p(\"src/app/layout.tsx\");\n    expect(fs.existsSync(layoutPath)).toBe(true);\n\n    const src = fs.readFileSync(layoutPath, \"utf8\");\n\n    // nav items\n    expect(src).toMatch(/Home/);\n    expect(src).toMatch(/Train/);\n    expect(src).toMatch(/Generate/);\n    expect(src).toMatch(/History/);\n\n    // some logged-in/logged-out placeholder wording (flexible)\n    expect(src).toMatch(/log(ged)?\\s*-?in|signed\\s*-?in|auth/i);\n    expect(src).toMatch(/log(ged)?\\s*-?out|signed\\s*-?out|guest/i);\n  });\n\n  it(\"Nav renders expected link labels (sanity)\", () => {\n    const navPath = p(\"src/components/Nav.tsx\");\n    expect(fs.existsSync(navPath)).toBe(true);\n\n    const src = fs.readFileSync(navPath, \"utf8\");\n    expect(src).toMatch(/Home/);\n    expect(src).toMatch(/Train/);\n    expect(src).toMatch(/Generate/);\n    expect(src).toMatch(/History/);\n  });\n\n  it(\"shared components include required state semantics (sanity)\", () => {\n    const errorPath = p(\"src/components/ErrorState.tsx\");\n    const emptyPath = p(\"src/components/EmptyState.tsx\");\n    const loadingPath = p(\"src/components/LoadingState.tsx\");\n\n    expect(fs.existsSync(errorPath)).toBe(true);\n    expect(fs.existsSync(emptyPath)).toBe(true);\n    expect(fs.existsSync(loadingPath)).toBe(true);\n\n    const errorSrc = fs.readFileSync(errorPath, \"utf8\");\n    const emptySrc = fs.readFileSync(emptyPath, \"utf8\");\n    const loadingSrc = fs.readFileSync(loadingPath, \"utf8\");\n\n    // Error: banner-ish + retry button\n    expect(errorSrc).toMatch(/Retry/i);\n    expect(errorSrc).toMatch(/error/i);\n\n    // Empty: icon + heading + CTA link\n    expect(emptySrc).toMatch(/empty/i);\n    expect(emptySrc).toMatch(/href=|<Link/i);\n\n    // Loading: skeleton-ish\n    expect(loadingSrc).toMatch(/skeleton|animate|pulse|loading/i);\n  });\n\n  it(\"FormField includes label + inline error rendering (sanity)\", () => {\n    const ffPath = p(\"src/components/FormField.tsx\");\n    expect(fs.existsSync(ffPath)).toBe(true);\n\n    const src = fs.readFileSync(ffPath, \"utf8\");\n    expect(src).toMatch(/label/i);\n    expect(src).toMatch(/children/i);\n    expect(src).toMatch(/error/i);\n  });\n\n  it(\"placeholder protected route exists and renders a stub (no auth yet)\", () => {\n    const protectedPath = p(\"src/app/app/page.tsx\");\n    expect(fs.existsSync(protectedPath)).toBe(true);\n\n    const src = fs.readFileSync(protectedPath, \"utf8\");\n    // Accept any explicit stub language indicating it will be guarded later\n    expect(src).toMatch(/protected|guard|auth|stub|placeholder/i);\n  });\n});\n"
+}

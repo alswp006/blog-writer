@@ -1,0 +1,35 @@
+{
+  "id": "0006",
+  "title": "Draft generation: request form + generation API + persist history",
+  "epic": "Epic 3 Draft Generation",
+  "task": {
+    "description": "Create /generate page with topic + prompt form gated by tone training. Add /api/drafts/generate to use user tone_profile, generate stubbed draft text, persist draft record, and route to editor on success only.",
+    "acceptance_criteria": [
+      "Untrained users visiting /generate are redirected to /train (or see blocking UI + CTA).",
+      "Submitting with missing topic or prompt shows inline validation and no API call is made.",
+      "POST generate success creates a drafts row with request inputs, generatedText, timestamps, userId, and returns draftId.",
+      "If generation API returns 500, UI shows error and no drafts record is created (verify DB unchanged).",
+      "Submitting same request twice creates two distinct draft IDs with different createdAt timestamps."
+    ]
+  },
+  "covers": [
+    "F4 AC1-AC6 (core)",
+    "Training gate before generation"
+  ],
+  "files": [
+    "src/app/generate/page.tsx",
+    "src/app/api/drafts/generate/route.ts",
+    "src/lib/drafts/generate.ts",
+    "src/lib/validation.ts",
+    "src/lib/db/queries.ts"
+  ],
+  "definition_of_done": [
+    "API returns correct status codes and never leaks cross-user data",
+    "Successful submit navigates to /editor/[id]",
+    "Failure paths show recoverable UI"
+  ],
+  "db_schema": "tone_profiles, drafts",
+  "api_contract": "POST /api/drafts/generate {topic:string,prompt:string} -> 200 {draftId:string} | 400/401/403/500 {error}",
+  "dependencies": [],
+  "ui_requirements": "Generate page uses Card with FormField(Input for topic, Textarea for prompt). Submit Button default; show LoadingState while generating. Error banner on failure with retry. If blocked, EmptyState with CTA Button to /train."
+}

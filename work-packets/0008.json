@@ -1,0 +1,39 @@
+{
+  "id": "0008",
+  "title": "Landing + nav integration",
+  "epic": "Epic 0 Foundations",
+  "task": {
+    "description": "Update home page hero + CTA flows and wire Nav links across all pages. Ensure Login/Signup cross-links, nav shows session state and relevant actions, and every page is reachable from nav or CTAs.",
+    "acceptance_criteria": [
+      "Home page shows hero text and primary CTA that routes to /generate when logged in+trained, else routes to /login or /train appropriately.",
+      "Nav contains links to Home, Train, Generate, History; active/disabled states reflect auth/training gating.",
+      "Login page links to Signup and Signup links to Login; both visible and functional.",
+      "When logged out, nav shows Login/Signup and protected links redirect to /login.",
+      "After logout from nav, session ends and subsequent attempts to visit protected pages redirect to /login."
+    ]
+  },
+  "covers": [
+    "App navigation completeness",
+    "Reachability of all pages",
+    "Session-aware CTA wiring"
+  ],
+  "files": [
+    "src/app/page.tsx",
+    "src/components/Nav.tsx",
+    "src/app/login/page.tsx",
+    "src/app/signup/page.tsx",
+    "src/app/train/page.tsx",
+    "src/app/generate/page.tsx",
+    "src/app/history/page.tsx"
+  ],
+  "definition_of_done": [
+    "All routes reachable via nav or page CTAs",
+    "Session-aware redirects verified manually",
+    "No broken links in app shell"
+  ],
+  "db_schema": "",
+  "api_contract": "",
+  "dependencies": [],
+  "ui_requirements": "Home hero in Card: Title/Description + Button(default) CTA; secondary Buttons for Train/History when logged in. Nav: horizontal flex, Buttons as ghost links; show user email text-muted and Logout Button(destructive/ghost). States: loading skeleton for session check, error banner if session fetch fails.",
+  "test_code": "import { describe, it, expect, vi } from \"vitest\";\n\nfunction flattenChildren(node: any): any[] {\n  if (!node) return [];\n  if (Array.isArray(node)) return node.flatMap(flattenChildren);\n  if (typeof node !== \"object\") return [];\n\n  const children = node?.props?.children;\n  return [node, ...flattenChildren(children)];\n}\n\nfunction findAllByType(tree: any, type: any) {\n  return flattenChildren(tree).filter((n) => n && typeof n === \"object\" && n.type === type);\n}\n\nfunction findAllLinks(tree: any) {\n  // next/link typically renders to an element with props.href at the React element level.\n  return flattenChildren(tree).filter((n) => n && typeof n === \"object\" && n.props && \"href\" in n.props);\n}\n\n// ---------- Home page CTA routing ----------\ndescribe(\"Packet 0008 - Home page CTA gating\", () => {\n  it(\"routes primary CTA to /login when logged out\", async () => {\n    vi.resetModules();\n\n    vi.mock(\"@/lib/auth\", () => ({\n      getSession: vi.fn(async () => null),\n    }));\n\n    const Page = (await import(\"@/app/page\")).default;\n\n    const tree = await (Page as any)();\n    const links = findAllLinks(tree);\n\n    expect(links.some((l) => l.props.href === \"/login\")).toBe(true);\n  });\n\n  it(\"routes primary CTA to /train when logged in but not trained\", async () => {\n    vi.resetModules();\n\n    vi.mock(\"@/lib/auth\", () => ({\n      getSession: vi.fn(async () => ({ user: { id: \"u1\" }, trained: false })),\n    }));\n\n    const Page = (await import(\"@/app/page\")).default;\n\n    const tree = await (Page as any)();\n    const links = findAllLinks(tree);\n\n    expect(links.some((l) => l.props.href === \"/train\")).toBe(true);\n  });\n\n  it(\"routes primary CTA to /generate when logged in and trained\", async () => {\n    vi.resetModules();\n\n    vi.mock(\"@/lib/auth\", () => ({\n      getSession: vi.fn(async () => ({ user: { id: \"u1\" }, trained: true })),\n    }));\n\n    const Page = (await import(\"@/app/page\")).default;\n\n    const tree = await (Page as any)();\n    const links = findAllLinks(tree);\n\n    expect(links.some((l) => l.props.href === \"/generate\")).toBe(true);\n  });\n});\n\n// ---------- Nav integration ----------\ndescribe(\"Packet 0008 - Nav session state + protected navigation\", () => {\n  it(\"shows Login/Signup when logged out\", async () => {\n    vi.resetModules();\n\n    vi.mock(\"next/navigation\", () => ({\n      usePathname: vi.fn(() => \"/\"),\n      redirect: vi.fn(),\n    }));\n\n    vi.mock(\"@/lib/auth\", () => ({\n      useClientSession: vi.fn(() => ({ status: \"unauthenticated\", data: null })),\n    }));\n\n    const Nav = (await import(\"@/components/Nav\")).default;\n\n    const tree = (Nav as any)();\n    const links = findAllLinks(tree);\n\n    expect(links.some((l) => l.props.href === \"/login\")).toBe(true);\n    expect(links.some((l) => l.props.href === \"/signup\")).toBe(true);\n  });\n\n  it(\"after logout action, session ends and subsequent protected page redirects to /login\", async () => {\n    vi.resetModules();\n\n    const redirect = vi.fn();\n\n    vi.mock(\"next/navigation\", () => ({\n      usePathname: vi.fn(() => \"/generate\"),\n      redirect,\n    }));\n\n    // Nav uses a client session hook; protected pages typically use server session.\n    vi.mock(\"@/lib/auth\", () => ({\n      useClientSession: vi.fn(() => ({ status: \"authenticated\", data: { user: { id: \"u1\" }, trained: true } })),\n      logout: vi.fn(async () => undefined),\n      getSession: vi.fn(async () => null), // after logout, server session is gone\n    }));\n\n    const GeneratePage = (await import(\"@/app/generate/page\")).default;\n\n    await (GeneratePage as any)();\n    expect(redirect).toHaveBeenCalledWith(\"/login\");\n  });\n});\n\n// ---------- Login/Signup cross-links ----------\ndescribe(\"Packet 0008 - Login/Signup cross-links\", () => {\n  it(\"Login page includes link to /signup\", async () => {\n    vi.resetModules();\n\n    const Page = (await import(\"@/app/login/page\")).default;\n    const tree = await (Page as any)();\n\n    const links = findAllLinks(tree);\n    expect(links.some((l) => l.props.href === \"/signup\")).toBe(true);\n  });\n\n  it(\"Signup page includes link to /login\", async () => {\n    vi.resetModules();\n\n    const Page = (await import(\"@/app/signup/page\")).default;\n    const tree = await (Page as any)();\n\n    const links = findAllLinks(tree);\n    expect(links.some((l) => l.props.href === \"/login\")).toBe(true);\n  });\n});\n"
+}

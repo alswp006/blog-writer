@@ -1,0 +1,41 @@
+{
+  "id": "0005",
+  "title": "Tone training APIs: URL crawl + paste samples (timeouts, limits, failures)",
+  "epic": "Epic 2 Tone Training",
+  "task": {
+    "description": "Add /api/tone/train-url and /api/tone/train-paste to create a tone_profile once per user. URL flow fetches HTML w/ timeout and text extraction; paste flow enforces max length and handles server errors.",
+    "acceptance_criteria": [
+      "POST train-url with empty url returns 400; UI shows required validation and no profile is created.",
+      "URL crawl success creates tone_profiles row for user and status API returns trained=true after refresh.",
+      "URL crawl unreachable/non-HTML returns 422 with message; UI shows failure + retry + paste fallback CTA.",
+      "URL crawl exceeding TIMEOUT_MS returns 408; UI shows timeout error and retry option.",
+      "Paste flow blocks >MAX_SAMPLE_CHARS client-side and server returns 413 if exceeded; empty paste returns 400; failures do not create profile."
+    ]
+  },
+  "covers": [
+    "F2 AC1,AC4,AC5",
+    "F3 AC1-AC6 (core)",
+    "Reliability-first errors + fallback"
+  ],
+  "files": [
+    "src/app/api/tone/train-url/route.ts",
+    "src/app/api/tone/train-paste/route.ts",
+    "src/lib/crawl.ts",
+    "src/lib/tone/analyze.ts",
+    "src/lib/constants.ts",
+    "src/app/train/page.tsx",
+    "src/app/train/paste/page.tsx"
+  ],
+  "definition_of_done": [
+    "Timeout implemented via AbortController and constant",
+    "Text extraction handles basic HTML and strips scripts/styles",
+    "API enforces one tone_profile per user (409 on duplicate)",
+    "All errors mapped to clear UI messages"
+  ],
+  "db_schema": "tone_profiles",
+  "api_contract": "POST /api/tone/train-url {url:string} -> 200 {trained:true} | 400/401/408/409/422 {error}; POST /api/tone/train-paste {text:string} -> 200 {trained:true} | 400/401/409/413/500 {error}",
+  "dependencies": [
+    "cheerio"
+  ],
+  "ui_requirements": "Train URL + Paste pages use Card with Textarea (paste) and Input (url). Show LoadingState during submit, disable Button. On error show ErrorState banner and keep fallback CTA visible. Completed: Badge + Button to /generate."
+}

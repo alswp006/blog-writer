@@ -1,0 +1,38 @@
+{
+  "id": "0002",
+  "title": "Database schema + ORM setup (account isolation, tone profile, drafts)",
+  "epic": "Epic 0 Foundations",
+  "task": {
+    "description": "Add Prisma schema + db client for users, one tone_profile per user, and drafts history with editable text. Enforce isolation via userId filters and unique constraint on tone_profiles.userId.",
+    "acceptance_criteria": [
+      "Prisma schema includes users, tone_profiles (userId unique), and drafts with createdAt/updatedAt.",
+      "DB migration runs successfully and prisma client can query tables.",
+      "Attempting to create a 2nd tone_profile for same user fails at DB constraint level.",
+      "All draft/tone queries in helper functions require userId and filter by it.",
+      "Draft model stores generatedText and editedText (nullable) and updates updatedAt on edit."
+    ]
+  },
+  "covers": [
+    "Account isolation",
+    "One-time tone training enforced in DB",
+    "History per account"
+  ],
+  "files": [
+    "src/lib/db.ts",
+    "src/prisma/schema.prisma",
+    "src/lib/db/queries.ts"
+  ],
+  "definition_of_done": [
+    "Migration applied locally",
+    "Prisma client generated and imported from src/lib/db.ts",
+    "Query helpers documented with userId requirement"
+  ],
+  "db_schema": "users, tone_profiles, drafts",
+  "api_contract": "",
+  "dependencies": [
+    "prisma",
+    "@prisma/client"
+  ],
+  "ui_requirements": "",
+  "test_code": "import { describe, it, expect } from \"vitest\";\nimport fs from \"node:fs\";\nimport path from \"node:path\";\n\nconst repoRoot = process.cwd();\nconst p = (...parts: string[]) => path.join(repoRoot, ...parts);\n\ndescribe(\"packet-0002: prisma schema + ORM setup (sanity)\", () => {\n  it(\"required files exist\", () => {\n    const files = [\n      \"src/lib/db.ts\",\n      \"src/prisma/schema.prisma\",\n      \"src/lib/db/queries.ts\",\n    ];\n\n    for (const f of files) {\n      expect(fs.existsSync(p(f))).toBe(true);\n    }\n  });\n\n  it(\"schema.prisma defines user, tone_profile (userId unique), and drafts with timestamps\", () => {\n    const schemaPath = p(\"src/prisma/schema.prisma\");\n    expect(fs.existsSync(schemaPath)).toBe(true);\n\n    const schema = fs.readFileSync(schemaPath, \"utf8\");\n\n    // models exist\n    expect(schema).toMatch(/model\\s+User\\b/);\n    expect(schema).toMatch(/model\\s+ToneProfile\\b|model\\s+tone_profiles\\b|model\\s+Tone_Profile\\b/);\n    expect(schema).toMatch(/model\\s+Draft\\b|model\\s+drafts\\b/);\n\n    // tone_profile userId unique constraint (DB-enforced)\n    expect(schema).toMatch(/userId\\s+\\w+/);\n    expect(schema).toMatch(/@unique\\b[^\\n]*\\buserId\\b|userId[^\\n]*@unique/);\n\n    // drafts timestamps\n    expect(schema).toMatch(/createdAt\\b/);\n    expect(schema).toMatch(/updatedAt\\b/);\n\n    // drafts text fields\n    expect(schema).toMatch(/generatedText\\b/);\n    expect(schema).toMatch(/editedText\\b/);\n\n    // updatedAt should be auto-updated in prisma\n    expect(schema).toMatch(/updatedAt[^\\n]*@updatedAt/);\n  });\n\n  it(\"db client module exports/initializes PrismaClient (sanity)\", () => {\n    const dbPath = p(\"src/lib/db.ts\");\n    expect(fs.existsSync(dbPath)).toBe(true);\n\n    const src = fs.readFileSync(dbPath, \"utf8\");\n    expect(src).toMatch(/PrismaClient/);\n    // either direct export or singleton pattern\n    expect(src).toMatch(/export\\s+(const|default)\\s+\\w+|module\\.exports/);\n  });\n\n  it(\"query helpers require userId and filter by it (static sanity checks)\", () => {\n    const qPath = p(\"src/lib/db/queries.ts\");\n    expect(fs.existsSync(qPath)).toBe(true);\n\n    const src = fs.readFileSync(qPath, \"utf8\");\n\n    // ensure userId is part of public helper signatures somewhere\n    expect(src).toMatch(/userId\\s*:\\s*string|userId\\s*:\\s*\\w+/);\n\n    // ensure queries include where: { userId: ... } patterns\n    expect(src).toMatch(/where\\s*:\\s*\\{[^\\}]*userId\\s*:\\s*/s);\n\n    // ensure tone profile access is user-scoped somewhere\n    expect(src).toMatch(/ToneProfile|toneProfile|tone_profile/);\n    expect(src).toMatch(/userId/);\n\n    // ensure drafts access is user-scoped somewhere\n    expect(src).toMatch(/Draft|draft/);\n    expect(src).toMatch(/userId/);\n  });\n});\n"
+}

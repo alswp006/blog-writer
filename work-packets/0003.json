@@ -1,0 +1,43 @@
+{
+  "id": "0003",
+  "title": "Auth: signup/login/logout + sessions + route protection",
+  "epic": "Epic 1 Authentication",
+  "task": {
+    "description": "Implement email+password auth with signup/login pages, session cookie, logout endpoint, and middleware route protection. Add redirect rules: new users go to /train; untrained users redirected to /train.",
+    "acceptance_criteria": [
+      "/signup validates email format and password min length; invalid email blocks submit and shows inline error.",
+      "/login with wrong credentials returns 401 and shows auth error banner; user stays logged out.",
+      "Successful signup creates user, sets session cookie, and redirects to /train.",
+      "Successful login sets session; redirects to / if trained else /train (verified by navigation).",
+      "Protected routes (/train,/generate,/history,/editor/:id) redirect to /login when no session; /api returns 401 for unauthenticated."
+    ]
+  },
+  "covers": [
+    "F1 AC1-AC6 (core)",
+    "Route protection + session state"
+  ],
+  "files": [
+    "src/app/login/page.tsx",
+    "src/app/signup/page.tsx",
+    "src/app/api/auth/signup/route.ts",
+    "src/app/api/auth/login/route.ts",
+    "src/app/api/auth/logout/route.ts",
+    "src/lib/auth/session.ts",
+    "src/lib/auth/password.ts",
+    "src/middleware.ts",
+    "src/components/Nav.tsx",
+    "src/lib/validation.ts"
+  ],
+  "definition_of_done": [
+    "Auth endpoints return correct status codes (200/401/400)",
+    "Session cookie httpOnly set/cleared correctly",
+    "Middleware protects pages and API routes consistently"
+  ],
+  "db_schema": "users, tone_profiles",
+  "api_contract": "POST /api/auth/signup {email,password} -> 200 {user:{id,email}} | 400 {error}; POST /api/auth/login {email,password} -> 200 {user:{id,email}} | 401 {error}; POST /api/auth/logout -> 200 {ok:true}",
+  "dependencies": [
+    "bcryptjs",
+    "iron-session"
+  ],
+  "ui_requirements": "Login/Signup use Card with Header/Title/Description; FormField wraps Input. Primary Button submit, secondary link cross-link Login<->Signup. Error state: banner (ErrorState) with message. Loading: disable Button + show skeleton."
+}
