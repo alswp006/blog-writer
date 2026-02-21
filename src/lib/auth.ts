@@ -86,3 +86,21 @@ export function validateSessionToken(token: string): boolean {
   }
   return true;
 }
+
+/** Get userId from a session token (for API route handlers) */
+export function getSessionUserId(token: string): number | null {
+  const session = sessions.get(token);
+  if (!session) return null;
+  if (session.expiresAt < Date.now()) {
+    sessions.delete(token);
+    return null;
+  }
+  return session.userId;
+}
+
+/** Create a session token without setting a cookie (for tests and internal use) */
+export function createSessionToken(userId: number): string {
+  const token = crypto.randomBytes(32).toString("hex");
+  sessions.set(token, { userId, expiresAt: Date.now() + SESSION_MAX_AGE * 1000 });
+  return token;
+}
