@@ -1,5 +1,6 @@
 import Database from "better-sqlite3";
 import path from "path";
+import { ensureAppSchema } from "./ensureAppSchema";
 
 const DB_PATH = path.join(process.cwd(), "app.db");
 
@@ -36,6 +37,9 @@ export function getDb(): Database.Database {
     );
   `);
 
+  // Initialize app schema (style_profiles, crawl_attempts, writing_requests, generated_drafts)
+  ensureAppSchema(_db);
+
   return _db;
 }
 
@@ -53,3 +57,5 @@ export function queryOne<T = Record<string, unknown>>(sql: string, ...params: un
 export function execute(sql: string, ...params: unknown[]) {
   return getDb().prepare(sql).run(...params);
 }
+
+export { ensureAppSchema };
