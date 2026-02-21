@@ -1,0 +1,37 @@
+{
+  "id": "0009",
+  "title": "UI: New writing request + request detail (latest draft)",
+  "epic": "Epic 3. UI Pages",
+  "task": {
+    "description": "Create /write page with a form to POST /api/writing-requests and redirect to /requests/:id on success. Create /requests/[id] page that GETs /api/writing-requests/:id and renders request fields plus latest draft content. Handle 409 style-not-ready with a CTA link to /style.",
+    "acceptance_criteria": [
+      "F1-AC7: When not logged in, /write displays an auth-required error banner from the API with a link to /login.",
+      "F3-AC2: Submitting a valid topic creates a request and navigates to /requests/:id where the latestDraft.content is visible on first load.",
+      "F3-AC5: Visiting /requests/:id for a non-owned/unknown id shows a 404-style empty state (no data leakage) and does not render any draft text.",
+      "F3-AC2: If titleHint is provided in /write, the detail page draft includes the exact titleHint substring.",
+      "F3-AC2: If API returns 409 with message STYLE_PROFILE_NOT_READY, /write shows an error banner and a visible button linking to /style."
+    ]
+  },
+  "covers": [
+    "F3-AC2",
+    "F3-AC5",
+    "F1-AC7"
+  ],
+  "files": [
+    "src/app/write/page.tsx",
+    "src/app/requests/[id]/page.tsx",
+    "src/components/writing/NewRequestForm.tsx",
+    "src/components/writing/DraftViewer.tsx"
+  ],
+  "definition_of_done": [
+    "Pages use existing UI primitives and have loading/empty/error states.",
+    "After successful creation, the user ends on /requests/:id with content displayed."
+  ],
+  "depends_on": [
+    "0007"
+  ],
+  "db_schema": "",
+  "api_contract": "",
+  "dependencies": [],
+  "ui_requirements": "Routes: /write and /requests/[id]. /write: Card with Inputs for topic/titleHint and Textareas for keyPoints/constraints, submit Button (disabled while loading). /requests/[id]: header with topic + status Badge, DraftViewer in Card. States: loading skeleton; empty 404 state; error banner with retry; 409 conflict state includes CTA to /style."
+}

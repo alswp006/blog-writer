@@ -1,0 +1,37 @@
+{
+  "id": "0003",
+  "title": "Repositories (better-sqlite3) for style/crawl/writing/drafts",
+  "epic": "Epic 1. Data Layer",
+  "task": {
+    "description": "Implement minimal repo functions on top of the existing better-sqlite3 db: style profile get/upsert, crawl attempt create/update, writing request create/update/get-for-user, and generated draft create-as-latest/get-latest-for-user. Enforce ownership by returning null for other users.",
+    "acceptance_criteria": [
+      "F3-AC5: getWritingRequestByIdForUser(id, wrongUserId) returns null even if the row exists for another user.",
+      "F3-AC2: createGeneratedDraftAsLatest(writingRequestId) results in exactly one row with isLatest=1 for that writingRequestId after repeated calls.",
+      "F1-AC1: upsertStyleProfileForUser(userId, ...) creates a row when missing and updates the same row on subsequent calls (userId remains UNIQUE).",
+      "F1-AC2: createCrawlAttempt(...) inserts a crawl_attempts row with the provided userId/url and status persisted."
+    ]
+  },
+  "covers": [
+    "F3-AC2",
+    "F3-AC5",
+    "F1-AC1",
+    "F1-AC2"
+  ],
+  "files": [
+    "src/lib/repos/styleProfileRepo.ts",
+    "src/lib/repos/crawlAttemptRepo.ts",
+    "src/lib/repos/writingRequestRepo.ts",
+    "src/lib/repos/generatedDraftRepo.ts"
+  ],
+  "definition_of_done": [
+    "Repos import db from the template DB module and run without throwing for valid inputs.",
+    "All SQL statements use parameters (no string interpolation for user input)."
+  ],
+  "depends_on": [
+    "0002"
+  ],
+  "db_schema": "",
+  "api_contract": "",
+  "dependencies": [],
+  "ui_requirements": ""
+}

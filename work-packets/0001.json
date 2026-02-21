@@ -1,0 +1,32 @@
+{
+  "id": "0001",
+  "title": "DB schema + startup ensureAppSchema()",
+  "epic": "Epic 1. Data Layer",
+  "task": {
+    "description": "Create ensureAppSchema() that creates the 4 app tables with SPEC columns/CHECK constraints and is safe to run multiple times. Wire it into the existing SQLite bootstrap so a fresh DB boots without errors and tables exist before any API calls.",
+    "acceptance_criteria": [
+      "F1-AC1: On a fresh DB file, app boots without SQLite errors and subsequent API calls can create/read style profile rows.",
+      "F1-AC2: Running ensureAppSchema() twice in the same process does not throw and leaves tables present.",
+      "F1-AC1: style_profiles has a UNIQUE constraint on userId (verified via sqlite schema inspection).",
+      "F1-AC2: All four tables exist with CHECK constraints for status/sourceType values matching SPEC."
+    ]
+  },
+  "covers": [
+    "F1-AC1",
+    "F1-AC2"
+  ],
+  "files": [
+    "src/lib/db/ensureAppSchema.ts",
+    "src/lib/db/index.ts"
+  ],
+  "definition_of_done": [
+    "`pnpm build` succeeds.",
+    "Starting the dev server with an empty DB creates all 4 tables.",
+    "Schema creation uses CREATE TABLE IF NOT EXISTS and does not throw when repeated."
+  ],
+  "depends_on": [],
+  "db_schema": "CREATE TABLE IF NOT EXISTS style_profiles (\n  id TEXT PRIMARY KEY,\n  userId TEXT NOT NULL UNIQUE,\n  sourceType TEXT NOT NULL CHECK (sourceType IN ('url','paste')),\n  sourceUrl TEXT NULL,\n  trainingText TEXT NULL,\n  styleSummary TEXT NOT NULL DEFAULT '',\n  status TEXT NOT NULL CHECK (status IN ('untrained','training','ready','failed')),\n  lastError TEXT NULL,\n  createdAt TEXT NOT NULL,\n  updatedAt TEXT NOT NULL,\n  FOREIGN KEY (userId) REFERENCES users(id)\n);\n\nCREATE TABLE IF NOT EXISTS crawl_attempts (\n  id TEXT PRIMARY KEY,\n  userId TEXT NOT NULL,\n  url TEXT NOT NULL,\n  status TEXT NOT NULL CHECK (status IN ('pending','success','failed')),\n  httpStatus INTEGER NULL,\n  extractedText TEXT NULL,\n  errorMessage TEXT NULL,\n  createdAt TEXT NOT NULL,\n  FOREIGN KEY (userId) REFERENCES users(id)\n);\n\nCREATE TABLE IF NOT EXISTS writing_requests (\n  id TEXT PRIMARY KEY,\n  userId TEXT NOT NULL,\n  topic TEXT NOT NULL,\n  titleHint TEXT NULL,\n  keyPoints TEXT NULL,\n  constraints TEXT NULL,\n  status TEXT NOT NULL CHECK (status IN ('queued','generating','completed','failed')),\n  lastError TEXT NULL,\n  createdAt TEXT NOT NULL,\n  updatedAt TEXT NOT NULL,\n  FOREIGN KEY (userId) REFERENCES users(id)\n);\n\nCREATE TABLE IF NOT EXISTS generated_drafts (\n  id TEXT PRIMARY KEY,\n  writingRequestId TEXT NOT NULL,\n  userId TEXT NOT NULL,\n  content TEXT NOT NULL,\n  version INTEGER NOT NULL,\n  isLatest INTEGER NOT NULL CHECK (isLatest IN (0,1)),\n  createdAt TEXT NOT NULL,\n  FOREIGN KEY (writingRequestId) REFERENCES writing_requests(id),\n  FOREIGN KEY (userId) REFERENCES users(id)\n);",
+  "api_contract": "",
+  "dependencies": [],
+  "ui_requirements": ""
+}

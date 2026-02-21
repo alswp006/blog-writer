@@ -1,0 +1,45 @@
+{
+  "id": "0006",
+  "title": "Style profile API routes (GET + train-url + train-paste)",
+  "epic": "Epic 2. API Routes",
+  "task": {
+    "description": "Implement the 3 style profile endpoints with shared auth/error helpers: GET /api/style-profile, POST /api/style-profile/train-url, and POST /api/style-profile/train-paste. Persist via repos, enforce URL validation, min length (1000), truncation (20000), and required statuses/lastError.",
+    "acceptance_criteria": [
+      "F1-AC7: GET /api/style-profile without session returns 401 with error.code=\"UNAUTHORIZED\".",
+      "F1-AC6: POST /api/style-profile/train-url with url not starting http:// or https:// returns 400 with error.code=\"VALIDATION_ERROR\".",
+      "F1-AC3: POST /api/style-profile/train-url with extracted length >= 1000 returns 200 and styleProfile.status=\"ready\" and trainingText.length between 1000 and 20000 inclusive.",
+      "F1-AC5: POST /api/style-profile/train-url with extracted length < 1000 returns 200 and styleProfile.status=\"failed\" and lastError=\"INSUFFICIENT_TRAINING_TEXT\".",
+      "F2-AC3: POST /api/style-profile/train-paste with >20000 chars stores trainingText.length===20000 and returns 200 with styleProfile.sourceType=\"paste\"."
+    ]
+  },
+  "covers": [
+    "F1-AC1",
+    "F1-AC2",
+    "F1-AC3",
+    "F1-AC4",
+    "F1-AC5",
+    "F1-AC6",
+    "F1-AC7",
+    "F2-AC1",
+    "F2-AC2",
+    "F2-AC3"
+  ],
+  "files": [
+    "src/app/api/style-profile/route.ts",
+    "src/app/api/style-profile/train-url/route.ts",
+    "src/app/api/style-profile/train-paste/route.ts"
+  ],
+  "definition_of_done": [
+    "All three routes compile and return JSON responses only.",
+    "Ownership rule is respected by only reading/upserting the session user’s style profile."
+  ],
+  "depends_on": [
+    "0003",
+    "0004",
+    "0005"
+  ],
+  "db_schema": "",
+  "api_contract": "GET /api/style-profile {} → {styleProfile: StyleProfile|null} | 401\n\nPOST /api/style-profile/train-url {url:string} → {styleProfile:StyleProfile,crawlAttempt:CrawlAttempt} | 401 | 400(VALIDATION_ERROR) | 500(INTERNAL_ERROR)\n\nPOST /api/style-profile/train-paste {text:string} → {styleProfile:StyleProfile} | 401 | 400(VALIDATION_ERROR)",
+  "dependencies": [],
+  "ui_requirements": ""
+}

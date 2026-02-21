@@ -1,0 +1,37 @@
+{
+  "id": "0007",
+  "title": "Writing requests API (create+generate) + detail fetch",
+  "epic": "Epic 2. API Routes",
+  "task": {
+    "description": "Add deterministic draft generation and wire writing request APIs: POST /api/writing-requests creates a writing_request, requires StyleProfile.status=\"ready\" else 409, generates a draft including titleHint substring when provided, stores it as latest draft, and returns both. GET /api/writing-requests/:id returns owned request + latest draft or 404.",
+    "acceptance_criteria": [
+      "F3-AC5: GET /api/writing-requests/:id for an id belonging to another user returns 404 (not 403) with error.code=\"NOT_FOUND\".",
+      "F3-AC2: POST /api/writing-requests creates a generated_drafts row with isLatest=1 and subsequent draft creation for same request results in only one latest row.",
+      "F3-AC2: If titleHint is provided, the returned latestDraft.content includes the exact titleHint substring (string containment check).",
+      "F1-AC7: POST /api/writing-requests without session returns 401 with error.code=\"UNAUTHORIZED\"."
+    ]
+  },
+  "covers": [
+    "F3-AC2",
+    "F3-AC5",
+    "F1-AC7"
+  ],
+  "files": [
+    "src/lib/writing/generateDraft.ts",
+    "src/app/api/writing-requests/route.ts",
+    "src/app/api/writing-requests/[id]/route.ts"
+  ],
+  "definition_of_done": [
+    "Routes validate input and return SPEC error shape on errors.",
+    "Draft content is truncated to MAX_DRAFT_CONTENT_LEN before storage."
+  ],
+  "depends_on": [
+    "0003",
+    "0004",
+    "0002"
+  ],
+  "db_schema": "",
+  "api_contract": "POST /api/writing-requests {topic:string,titleHint?:string|null,keyPoints?:string|null,constraints?:string|null} → {writingRequest:WritingRequest, latestDraft:GeneratedDraft} | 401 | 400(VALIDATION_ERROR) | 409(CONFLICT message=STYLE_PROFILE_NOT_READY) | 500\n\nGET /api/writing-requests/:id {} → {writingRequest:WritingRequest, latestDraft:GeneratedDraft|null} | 401 | 404(NOT_FOUND)",
+  "dependencies": [],
+  "ui_requirements": ""
+}

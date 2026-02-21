@@ -1,0 +1,35 @@
+{
+  "id": "0002",
+  "title": "Strict model types + limits/helpers",
+  "epic": "Epic 1. Data Layer",
+  "task": {
+    "description": "Add strict TypeScript model types matching SPEC response shapes and enforceable unions for status/sourceType. Add constants for text limits and helpers nowIso() and truncate(str,max) used across repos and API routes for server-enforced truncation.",
+    "acceptance_criteria": [
+      "F1-AC3: MAX_TRAINING_TEXT_LEN is defined as 20000 and MIN_TRAINING_TEXT_LEN as 1000 in a shared module.",
+      "F2-AC3: truncate(str, 20000) always returns a string with length <= 20000 (including for empty/short strings).",
+      "F1-AC3: Status union types for StyleProfile/CrawlAttempt/WritingRequest match SPEC allowed values exactly (no extras).",
+      "F1-AC1: TypeScript strict build passes with the new types exported and usable by route handlers."
+    ]
+  },
+  "covers": [
+    "F1-AC3",
+    "F2-AC3"
+  ],
+  "files": [
+    "src/lib/models/types.ts",
+    "src/lib/models/limits.ts",
+    "src/lib/models/time.ts",
+    "src/lib/models/text.ts"
+  ],
+  "definition_of_done": [
+    "`pnpm build` succeeds with `strict: true`.",
+    "Types are exported and can be imported from `@/lib/models/*`."
+  ],
+  "depends_on": [
+    "0001"
+  ],
+  "db_schema": "",
+  "api_contract": "",
+  "dependencies": [],
+  "ui_requirements": ""
+}

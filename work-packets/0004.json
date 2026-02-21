@@ -1,0 +1,32 @@
+{
+  "id": "0004",
+  "title": "API utilities: jsonError() + requireUserId() auth gate",
+  "epic": "Epic 2. API Routes",
+  "task": {
+    "description": "Create shared API helpers: jsonError(status, code, message, details?) that returns the SPEC error JSON shape, and requireUserId(req) that reads the template session and returns either {userId} or a 401 Response. Later routes must reuse these helpers.",
+    "acceptance_criteria": [
+      "F1-AC7: requireUserId(...) returns a Response with status 401 and JSON error.code=\"UNAUTHORIZED\" when no session user exists.",
+      "F1-AC6: jsonError(400,\"VALIDATION_ERROR\",...) returns status 400 and JSON {error:{code,message,details?}} (no extra top-level fields).",
+      "F1-AC7: A route can return requireUserId(...)’s 401 Response without additional wrapping and the JSON matches the SPEC error shape."
+    ]
+  },
+  "covers": [
+    "F1-AC7",
+    "F1-AC6"
+  ],
+  "files": [
+    "src/lib/api/jsonError.ts",
+    "src/lib/api/requireUserId.ts"
+  ],
+  "definition_of_done": [
+    "Helpers are pure and reusable across route handlers.",
+    "`pnpm build` succeeds."
+  ],
+  "depends_on": [
+    "0002"
+  ],
+  "db_schema": "",
+  "api_contract": "",
+  "dependencies": [],
+  "ui_requirements": ""
+}

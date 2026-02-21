@@ -1,0 +1,39 @@
+{
+  "id": "0010",
+  "title": "Landing page + SEO + marketing setup",
+  "epic": "Epic 4. Integration + Landing",
+  "task": {
+    "description": "Customize the public landing page content for the app (tone training from URL/paste + draft generation). Wire nav links to Home, Style, Write. Update OG image route to reflect branding text. Add sitemap.ts and robots.ts for indexing control.",
+    "acceptance_criteria": [
+      "F1-AC1: Nav contains working links to \"/\", \"/style\", and \"/write\" and each route renders without a runtime error when clicked.",
+      "F1-AC7: Landing page is accessible without authentication and does not call authenticated APIs during server render (no 401 banners on home).",
+      "F1-AC4: GET /api/og returns an image response (content-type starts with \"image/\") with app name present in the rendered output.",
+      "F1-AC1: src/app/sitemap.ts exports a valid sitemap including at least \"/\", \"/style\", and \"/write\" URLs.",
+      "F1-AC1: src/app/robots.ts exports robots rules allowing indexing of public pages (home) while not erroring at build time."
+    ]
+  },
+  "covers": [
+    "F1-AC1",
+    "F1-AC4",
+    "F1-AC7"
+  ],
+  "files": [
+    "src/app/page.tsx",
+    "src/components/ui/nav.tsx",
+    "src/app/api/og/route.tsx",
+    "src/app/sitemap.ts",
+    "src/app/robots.ts"
+  ],
+  "definition_of_done": [
+    "Home page copy reflects the SPEC features (URL training, paste fallback, draft generation).",
+    "`pnpm build` succeeds and sitemap/robots routes are generated."
+  ],
+  "depends_on": [
+    "0008",
+    "0009"
+  ],
+  "db_schema": "",
+  "api_contract": "",
+  "dependencies": [],
+  "ui_requirements": "Landing: Hero (title, subtitle, primary CTA to /style, secondary CTA to /write) + feature grid (Train from URL, Paste fallback, Generate drafts). Nav: include links to Home, Style, Write. OG: simple branded image with app name and tagline."
+}

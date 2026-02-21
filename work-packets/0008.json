@@ -1,0 +1,38 @@
+{
+  "id": "0008",
+  "title": "UI: Style Profile page (train by URL + paste)",
+  "epic": "Epic 3. UI Pages",
+  "task": {
+    "description": "Create /style page that loads GET /api/style-profile and lets the user train via URL or paste. Include two Card sections with Input/Textarea and submit Buttons that call the training endpoints, then render returned status, summary, and errors using consistent loading/empty/error states.",
+    "acceptance_criteria": [
+      "F1-AC7: When not logged in, navigating to /style results in an auth-required experience (page shows 401 error banner from API and a link to /login).",
+      "F1-AC6: Submitting a URL without http(s) shows an error banner containing error.code \"VALIDATION_ERROR\" from the API response.",
+      "F2-AC1: Submitting pasted text that meets min length results in UI showing sourceType \"paste\" and status \"ready\" from the response.",
+      "F1-AC3: After successful URL training with >=1000 chars, UI displays status \"ready\" and shows a non-empty styleSummary preview.",
+      "F1-AC2: After any URL training attempt, UI displays crawlAttempt.status as either \"success\" or \"failed\"."
+    ]
+  },
+  "covers": [
+    "F1-AC2",
+    "F1-AC3",
+    "F1-AC6",
+    "F1-AC7",
+    "F2-AC1"
+  ],
+  "files": [
+    "src/app/style/page.tsx",
+    "src/components/style/TrainUrlCard.tsx",
+    "src/components/style/TrainPasteCard.tsx"
+  ],
+  "definition_of_done": [
+    "Page uses only existing UI primitives (Button/Card/Input/Textarea/Badge).",
+    "Loading state disables submit buttons and shows a visible loading label."
+  ],
+  "depends_on": [
+    "0006"
+  ],
+  "db_schema": "",
+  "api_contract": "",
+  "dependencies": [],
+  "ui_requirements": "Route: /style. Layout: page title + two Cards (Train from URL, Train from Paste). Use Input for URL, Textarea for paste. States: initial loading skeleton; empty state when no profile; error banner (danger-soft) with retry; success state shows Badge for status and a Card section for styleSummary."
+}
