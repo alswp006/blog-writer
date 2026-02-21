@@ -1,0 +1,3 @@
+export const MAX_TRAINING_TEXT_LEN = 20000;
+export const MIN_TRAINING_TEXT_LEN = 1000;
+export const MAX_DRAFT_CONTENT_LEN = 50000;
