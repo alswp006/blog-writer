@@ -30,10 +30,10 @@ export function Nav() {
             BlogWriter
           </Link>
           <Link href="/style" className="text-xs text-[var(--text-secondary)] no-underline hover:text-[var(--text)] transition-all duration-150">
-            Style
+            문체
           </Link>
           <Link href="/write" className="text-xs text-[var(--text-secondary)] no-underline hover:text-[var(--text)] transition-all duration-150">
-            Write
+            글쓰기
           </Link>
         </div>
 
