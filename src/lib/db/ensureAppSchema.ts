@@ -16,8 +16,7 @@ export function ensureAppSchema(db: Database.Database): void {
       status TEXT NOT NULL CHECK (status IN ('untrained','training','ready','failed')),
       lastError TEXT NULL,
       createdAt TEXT NOT NULL,
-      updatedAt TEXT NOT NULL,
-      FOREIGN KEY (userId) REFERENCES users(id)
+      updatedAt TEXT NOT NULL
     );
 
     CREATE TABLE IF NOT EXISTS crawl_attempts (
@@ -28,8 +27,7 @@ export function ensureAppSchema(db: Database.Database): void {
       httpStatus INTEGER NULL,
       extractedText TEXT NULL,
       errorMessage TEXT NULL,
-      createdAt TEXT NOT NULL,
-      FOREIGN KEY (userId) REFERENCES users(id)
+      createdAt TEXT NOT NULL
     );
 
     CREATE TABLE IF NOT EXISTS writing_requests (
@@ -42,8 +40,7 @@ export function ensureAppSchema(db: Database.Database): void {
       status TEXT NOT NULL CHECK (status IN ('queued','generating','completed','failed')),
       lastError TEXT NULL,
       createdAt TEXT NOT NULL,
-      updatedAt TEXT NOT NULL,
-      FOREIGN KEY (userId) REFERENCES users(id)
+      updatedAt TEXT NOT NULL
     );
 
     CREATE TABLE IF NOT EXISTS generated_drafts (
@@ -54,8 +51,7 @@ export function ensureAppSchema(db: Database.Database): void {
       version INTEGER NOT NULL,
       isLatest INTEGER NOT NULL CHECK (isLatest IN (0,1)),
       createdAt TEXT NOT NULL,
-      FOREIGN KEY (writingRequestId) REFERENCES writing_requests(id),
-      FOREIGN KEY (userId) REFERENCES users(id)
+      FOREIGN KEY (writingRequestId) REFERENCES writing_requests(id)
     );
   `);
 }
