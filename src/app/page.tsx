@@ -6,7 +6,7 @@ import { Footer } from "@/components/landing/footer";
 
 export const metadata = seo({
   title: "Home",
-  description: "Build something amazing. Get started today.",
+  description: "Train your writing style from a URL or paste, then generate blog drafts that sound like you.",
   path: "/",
 });
 
@@ -14,43 +14,43 @@ export default function HomePage() {
   return (
     <div className="space-y-0">
       <HeroSection
-        headline="Build Something Amazing"
-        subheadline="The fastest way to go from idea to production. Start building today with powerful tools and seamless integrations."
-        ctaText="Get Started"
-        ctaHref="/signup"
-        secondaryCtaText="Login"
-        secondaryCtaHref="/login"
+        headline="Write Blog Posts in Your Voice"
+        subheadline="Train your style from a URL or paste your own writing. Generate polished drafts that sound exactly like you."
+        ctaText="Train Your Style"
+        ctaHref="/style"
+        secondaryCtaText="Write a Draft"
+        secondaryCtaHref="/write"
       />
 
       <FeatureGrid
-        heading="Everything You Need"
-        subheading="Powerful features to help you build, launch, and scale."
+        heading="How It Works"
+        subheading="Three steps to blog posts that match your unique voice and tone."
         features={[
           {
-            icon: "⚡",
-            title: "Lightning Fast",
+            icon: "🔗",
+            title: "Train from URL",
             description:
-              "Optimized for speed with modern architecture and edge-ready deployment.",
+              "Point to any published article or blog post. We extract the text and learn your writing patterns automatically.",
           },
           {
-            icon: "🔒",
-            title: "Secure by Default",
+            icon: "📋",
+            title: "Paste Your Writing",
             description:
-              "Built-in authentication, session management, and security best practices.",
+              "No URL? Paste in any sample of your writing — emails, essays, or previous posts — to capture your style.",
           },
           {
-            icon: "📦",
-            title: "Ready to Ship",
+            icon: "✍️",
+            title: "Generate Drafts",
             description:
-              "Pre-built components, payments, and analytics — everything you need to launch.",
+              "Enter a topic and get a full draft written in your voice. Edit, refine, and publish with confidence.",
           },
         ]}
       />
 
       <CtaSection
-        heading="Ready to Get Started?"
-        description="Join today and start building in minutes. No credit card required."
-        ctaText="Create Your Account"
+        heading="Ready to Write in Your Voice?"
+        description="Train your style profile in minutes. No credit card required."
+        ctaText="Get Started"
         ctaHref="/signup"
       />
 

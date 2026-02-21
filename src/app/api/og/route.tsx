@@ -3,12 +3,13 @@ import { NextRequest } from "next/server";
 
 export const runtime = "edge";
 
-const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "App";
+const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "BlogWriter";
+const defaultTagline = "Write blog posts in your voice";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const title = searchParams.get("title") || siteName;
-  const description = searchParams.get("description") || "";
+  const description = searchParams.get("description") || defaultTagline;
 
   return new ImageResponse(
     (

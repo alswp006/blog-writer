@@ -25,9 +25,17 @@ export function Nav() {
   return (
     <nav className="border-b border-[var(--border)] bg-[var(--bg-elevated)]">
       <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
-        <Link href="/" className="text-sm font-bold no-underline hover:no-underline text-[var(--text)]">
-          🏠 App
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link href="/" className="text-sm font-bold no-underline hover:no-underline text-[var(--text)]">
+            BlogWriter
+          </Link>
+          <Link href="/style" className="text-xs text-[var(--text-secondary)] no-underline hover:text-[var(--text)] transition-all duration-150">
+            Style
+          </Link>
+          <Link href="/write" className="text-xs text-[var(--text-secondary)] no-underline hover:text-[var(--text)] transition-all duration-150">
+            Write
+          </Link>
+        </div>
 
         <div className="flex items-center gap-3">
           <Link href="/pricing" className="text-xs text-[var(--text-secondary)] no-underline hover:text-[var(--text)]">
