@@ -12,7 +12,7 @@ export const metadata = seo({
 
 export default function HomePage() {
   return (
-    <div className="space-y-0">
+    <div className="w-screen ml-[calc(50%-50vw)]">
       <HeroSection
         headline="당신의 목소리로 블로그를 쓰세요"
         subheadline="URL에서 문체를 학습하거나 직접 글을 붙여넣으세요. AI가 당신과 똑같이 쓰는 초안을 생성합니다."
