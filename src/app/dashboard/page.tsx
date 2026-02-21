@@ -6,34 +6,34 @@ export default async function DashboardPage() {
   if (!user) redirect("/login");
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-sm text-[var(--text-muted)] mt-1">
+    <div className="space-y-8">
+      <div className="space-y-2">
+        <h1 className="text-3xl md:text-4xl font-bold">Dashboard</h1>
+        <p className="text-base text-[var(--text-secondary)]">
           Welcome back, {user.name || user.email}
         </p>
       </div>
 
-      <div className="card p-6">
-        <h2 className="text-lg font-semibold mb-4">Your Profile</h2>
-        <div className="space-y-3">
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-medium text-[var(--text-muted)] w-16">Email</span>
-            <span className="text-sm">{user.email}</span>
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-8 hover:shadow-md transition-all duration-300">
+        <h2 className="text-xl font-semibold mb-6">Your Profile</h2>
+        <div className="space-y-4">
+          <div className="flex items-center gap-4">
+            <span className="text-xs font-semibold text-[var(--text-muted)] uppercase w-20">Email</span>
+            <span className="text-sm text-[var(--text-secondary)]">{user.email}</span>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-medium text-[var(--text-muted)] w-16">Name</span>
-            <span className="text-sm">{user.name || "—"}</span>
+          <div className="flex items-center gap-4">
+            <span className="text-xs font-semibold text-[var(--text-muted)] uppercase w-20">Name</span>
+            <span className="text-sm text-[var(--text-secondary)]">{user.name || "—"}</span>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-medium text-[var(--text-muted)] w-16">Joined</span>
-            <span className="text-sm">{new Date(user.created_at).toLocaleDateString()}</span>
+          <div className="flex items-center gap-4">
+            <span className="text-xs font-semibold text-[var(--text-muted)] uppercase w-20">Joined</span>
+            <span className="text-sm text-[var(--text-secondary)]">{new Date(user.created_at).toLocaleDateString()}</span>
           </div>
         </div>
       </div>
 
       {/* Placeholder for app-specific content */}
-      <div className="card p-6 border-dashed">
+      <div className="rounded-2xl border-2 border-dashed border-[var(--border)] bg-[var(--bg-card)] p-8">
         <p className="text-sm text-[var(--text-muted)] text-center">
           Add your app features here. This dashboard is protected — only logged-in users can see it.
         </p>

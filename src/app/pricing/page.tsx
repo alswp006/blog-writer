@@ -42,11 +42,11 @@ const plans: Plan[] = [
 
 export default function PricingPage() {
   return (
-    <div className="space-y-10">
-      <div className="text-center space-y-3">
-        <h1 className="text-2xl font-bold text-[var(--text)]">Pricing</h1>
-        <p className="text-sm text-[var(--text-secondary)]">
-          Choose the plan that works for you
+    <div className="space-y-16">
+      <div className="text-center space-y-4">
+        <h1 className="text-4xl md:text-5xl font-bold text-[var(--text)] tracking-tight">Pricing</h1>
+        <p className="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto">
+          Choose the plan that works best for you. Always flexible, always fair.
         </p>
       </div>
       <PricingSection plans={plans} />

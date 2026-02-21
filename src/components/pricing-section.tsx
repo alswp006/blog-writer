@@ -39,21 +39,21 @@ export function PricingSection({ plans }: PricingSectionProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
       {plans.map((plan) => (
         <div
           key={plan.name}
-          className={`card p-6 flex flex-col ${
+          className={`rounded-2xl border bg-[var(--bg-card)] p-8 flex flex-col hover:shadow-md transition-all duration-300 ${
             plan.highlighted
               ? "border-[var(--accent)] ring-1 ring-[var(--accent)]"
-              : ""
+              : "border-[var(--border)]"
           }`}
         >
-          <h3 className="text-lg font-semibold text-[var(--text)]">
+          <h3 className="text-xl font-semibold text-[var(--text)]">
             {plan.name}
           </h3>
-          <div className="mt-2">
-            <span className="text-2xl font-bold text-[var(--text)]">
+          <div className="mt-3">
+            <span className="text-3xl font-bold text-[var(--text)]">
               {plan.price}
             </span>
             {plan.price !== "Free" && plan.price !== "Custom" && (
@@ -61,34 +61,34 @@ export function PricingSection({ plans }: PricingSectionProps) {
             )}
           </div>
           {plan.description && (
-            <p className="mt-2 text-sm text-[var(--text-secondary)]">
+            <p className="mt-3 text-sm text-[var(--text-secondary)]">
               {plan.description}
             </p>
           )}
-          <ul className="mt-4 space-y-2 flex-1">
+          <ul className="mt-6 space-y-3 flex-1">
             {plan.features.map((feature) => (
               <li
                 key={feature}
-                className="text-sm text-[var(--text-secondary)] flex items-start gap-2"
+                className="text-sm text-[var(--text-secondary)] flex items-start gap-3"
               >
-                <span className="text-[var(--success)] mt-0.5">✓</span>
-                {feature}
+                <span className="text-[var(--success)] font-bold mt-0.5 flex-shrink-0">✓</span>
+                <span>{feature}</span>
               </li>
             ))}
           </ul>
-          <div className="mt-6">
+          <div className="mt-8">
             {!stripeEnabled ? (
-              <span className="block text-center text-sm text-[var(--text-muted)] py-2">
+              <span className="block text-center text-sm text-[var(--text-muted)] py-3 rounded-xl border border-[var(--border)]">
                 Coming Soon
               </span>
             ) : plan.price === "Free" ? (
-              <span className="block text-center text-sm text-[var(--text-muted)] py-2">
+              <span className="block text-center text-sm text-[var(--text-muted)] py-3 rounded-xl border border-[var(--border)]">
                 Current Plan
               </span>
             ) : plan.price === "Custom" ? (
               <a
                 href="mailto:sales@example.com"
-                className="block text-center text-sm px-4 py-2 rounded-md border border-[var(--border)] text-[var(--text-secondary)] no-underline hover:bg-[var(--bg-card)] transition-all duration-150"
+                className="block text-center text-sm px-6 py-3 rounded-xl border border-[var(--border)] text-[var(--text-secondary)] no-underline hover:bg-[var(--bg-elevated)] transition-all duration-150 font-medium"
               >
                 Contact Sales
               </a>
@@ -96,10 +96,10 @@ export function PricingSection({ plans }: PricingSectionProps) {
               <button
                 onClick={() => handleCheckout(plan.priceId)}
                 disabled={loading === plan.priceId}
-                className={`w-full text-sm px-4 py-2 rounded-md transition-all duration-150 cursor-pointer ${
+                className={`w-full text-sm px-6 py-3 rounded-xl font-medium transition-all duration-150 cursor-pointer ${
                   plan.highlighted
-                    ? "bg-[var(--accent)] text-white hover:opacity-90"
-                    : "border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-card)]"
+                    ? "bg-[var(--accent)] text-white shadow-lg shadow-[var(--accent)]/25 hover:opacity-90"
+                    : "border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)]"
                 } disabled:opacity-50 disabled:cursor-not-allowed`}
               >
                 {loading === plan.priceId ? "Redirecting..." : "Get Started"}
